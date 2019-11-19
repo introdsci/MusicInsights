@@ -5,6 +5,7 @@ output:
     df_print: paged
 ---
 
+This builds upon the first part, from [`insights.Rmd`](insights.html)
 ```{r echo=FALSE, message=FALSE, error=FALSE, warning=FALSE, results='hide'}
 include <- function(library_name){
   if( !(library_name %in% installed.packages()) )
@@ -13,8 +14,8 @@ include <- function(library_name){
 }
 include("tidyverse")
 include("knitr")
-purl("insights.Rmd", output = "part1.r")
-source("part1.r")
+purl("insights.Rmd", output = "part1.r") # produces r source from rmd
+source("part1.r") # executes the source
 ```
 
 To pick up where we left off, we build the following table:
@@ -23,4 +24,30 @@ To pick up where we left off, we build the following table:
 print(favorite_rating)
 ```
 
-...and so on...
+It looks like -- as we might expect -- most people rated their favorite song high (at or close to 10). There are a couple exceptions, and the score of `2` probably indicates a mistake in data entry where the person who submitted "The Byrds Mr. Spaceman" was probably not the "Angel Angel" we identified. Two people answered the ratings survey indicating they were "Angel Angel."
+
+Moving on, it would also be interesting to see how people rated *other people's favorite songs*. Let's add that information to the **favorite_song** table:
+
+```{r}
+person$favorite_song_rating <- 
+  sapply(person$pseudonym,function(pseudo){
+    return(
+      ifelse(!is_empty(favorite_rating$rating[favorite_rating$pseudonym==pseudo]),
+        favorite_rating$rating[favorite_rating$pseudonym==pseudo],
+        NA))
+    })
+
+person$other_ratings <- 
+  sapply(person$pseudonym,
+    function(name){
+      fave <- favorite_rating$artist_song[favorite_rating$pseudonym==name]
+      others <- ratings$rating[ratings$artist_song != fave & ratings$pseudonym==name]
+      return(mean(others))
+    }
+  )
+
+positivity <- lm(data=person, formula=other_ratings~generator+sex+major+academic_level+birth_year+favorite_song_rating)
+summary(positivity)
+```
+
+

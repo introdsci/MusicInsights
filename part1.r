@@ -37,6 +37,10 @@ talents <- tibble(pseudonym = survey$pseudonym, instruments = survey$instruments
 
 
 ## ------------------------------------------------------------------------
+person$major[person$major == "Computer information systems"] <- "Computer Information Systems"
+
+
+## ------------------------------------------------------------------------
 colnames(preferences)[colnames(preferences)=="Timestamp"] <- "time_rated"
 colnames(preferences)[colnames(preferences)=="What was your pseudonym?"] <- "pseudonym"
 ratings <- preferences %>% 
@@ -68,6 +72,8 @@ earliest_time <- min(ratings$time_rated[ratings$pseudonym=="Angel Angel"])
 ratings <- ratings %>% filter(!(pseudonym=="Angel Angel" & time_rated!=earliest_time))
 earliest_time <- min(ratings$time_rated[ratings$pseudonym=="Mission Theory"])
 ratings <- ratings %>% filter(!(pseudonym=="Mission Theory" & time_rated!=earliest_time))
+earliest_time <- min(ratings$time_rated[ratings$pseudonym=="Band War"])
+ratings <- ratings %>% filter(!(pseudonym=="Band War" & time_rated!=earliest_time))
 
 
 ## ------------------------------------------------------------------------

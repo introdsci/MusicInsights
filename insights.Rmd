@@ -49,6 +49,12 @@ favorite_song <- tibble(pseudonym = survey$pseudonym, artist = survey$artist,
 talents <- tibble(pseudonym = survey$pseudonym, instruments = survey$instruments)
 ```
 
+Major has "Computer Information Systems" and "Computer information systems" as distinct values so let's combine them.
+
+```{r}
+person$major[person$major == "Computer information systems"] <- "Computer Information Systems"
+```
+
 *Preferences* is not organized well. It has a column for each song to rate. 
 Instead, let's make a column called *rating* and another column that has the song titles.
 
@@ -94,6 +100,8 @@ earliest_time <- min(ratings$time_rated[ratings$pseudonym=="Angel Angel"])
 ratings <- ratings %>% filter(!(pseudonym=="Angel Angel" & time_rated!=earliest_time))
 earliest_time <- min(ratings$time_rated[ratings$pseudonym=="Mission Theory"])
 ratings <- ratings %>% filter(!(pseudonym=="Mission Theory" & time_rated!=earliest_time))
+earliest_time <- min(ratings$time_rated[ratings$pseudonym=="Band War"])
+ratings <- ratings %>% filter(!(pseudonym=="Band War" & time_rated!=earliest_time))
 ```
 
 Now, I'm curious to see how each person rated their *own* favorite song, so let's get each pseudonym along with their favorite song and their rating of that song.
